@@ -1,0 +1,35 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Go binaries and temporary files
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.prof
+accel-web
+main
+
+# Common folders to ignore
+vendor/
+node_modules/
+
+# AI & Tool metadata
+.gemini/
+.agents/
+.agent/
+_agents/
+_agent/
+brain/
+
+# Audio files (optional, but good for local dev)
+*.mp3
+*.wav
+*.ogg
+
+# Local environment
+.env
+.env.local

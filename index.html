@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M2+AccelMotion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- 1. Background Layer (Orbs) -->
+    <div class="orb-layers">
+        <div id="orb-1" class="orb orb-1"></div>
+        <div id="orb-2" class="orb orb-2"></div>
+        <div id="orb-3" class="orb orb-3"></div>
+    </div>
+
+    <!-- 2. UI Layer (Glass Container) -->
+    <div class="app-container">
+        <!-- Floating Status -->
+        <div class="status">
+            <div id="status-dot" class="status-dot"></div>
+            <span id="status-text">DISCONNECTED</span>
+        </div>
+
+        <nav>
+            <div class="logo">M2+ ACCEL MOTION</div>
+            <button id="nav-dash" class="active">DASHBOARD</button>
+            <button id="nav-tap">TAP DETECT</button>
+            <button id="nav-level">LEVEL</button>
+            <button id="nav-sounds">SOUNDS</button>
+        </nav>
+
+        <main>
+            <!-- Page 1: Dashboard -->
+            <div id="page-dash" class="page active">
+                <div class="main-grid">
+                    <div class="card model-view">
+                        <div id="macbook" class="macbook-3d">
+                            <div class="macbook-lid">
+                                <div class="macbook-screen"></div>
+                                <div class="macbook-logo"></div>
+                            </div>
+                            <div class="macbook-base">
+                                <div class="macbook-keyboard"></div>
+                                <div class="macbook-trackpad"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div class="card">
+                            <div class="card-label">G-Force (EMA Smoothed)</div>
+                            <div class="metrics">
+                                <div>
+                                    <div id="val-x" class="metric-value">0.00</div>
+                                    <div class="gauge-container">
+                                        <div id="gauge-x" class="gauge-fill" style="background:var(--accent-x)"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div id="val-y" class="metric-value">0.00</div>
+                                    <div class="gauge-container">
+                                        <div id="gauge-y" class="gauge-fill" style="background:var(--accent-y)"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div id="val-z" class="metric-value">0.00</div>
+                                    <div class="gauge-container">
+                                        <div id="gauge-z" class="gauge-fill" style="background:var(--accent-z)"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="flex: 1; min-height: 0;">
+                            <div class="card-label">Real-time Stream</div>
+                            <div class="controls">
+                                <div class="control-group">
+                                    <span>Gain</span>
+                                    <input type="range" id="zoom-v" min="0.5" max="10" step="0.1" value="4">
+                                </div>
+                                <div class="control-group">
+                                    <span>Window</span>
+                                    <input type="range" id="zoom-h" min="50" max="1000" step="10" value="150">
+                                </div>
+                            </div>
+                            <div class="chart-container" style="flex: 1; height: 100%; min-height: 0;">
+                                <canvas id="chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 2: Tapping -->
+            <div id="page-tap" class="page page-tapping">
+                <div class="card tap-display">
+                    <div class="card-label">Knock Command Detector</div>
+                    <div id="tap-text" class="tap-answer">WAITING</div>
+                    <div class="tap-hint">1 Tap = YES | 2 Taps = NO</div>
+                </div>
+            </div>
+
+            <!-- Page 3: Level -->
+            <div id="page-level" class="page page-level">
+                <div class="card level-container">
+                    <div class="card-label">Spirit Level (Bubble)</div>
+                    <div class="vial">
+                        <div class="crosshair"></div>
+                        <div id="bubble" class="bubble"></div>
+                    </div>
+                    <div class="tap-hint" id="level-vals">X: 0.00 | Y: 0.00</div>
+                </div>
+            </div>
+
+            <!-- Page 4: Sounds -->
+            <div id="page-sounds" class="page page-sounds">
+                <div class="card sound-upload-card">
+                    <div class="card-label">Impact Sound Control</div>
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎵</div>
+                    <h3>Upload Hit Sound</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">Choose a local audio
+                        file to play on impact</p>
+
+                    <div class="file-input-wrapper">
+                        <div class="btn-upload">Choose File</div>
+                        <input type="file" id="audio-upload" accept="audio/*">
+                    </div>
+                    <div id="audio-status" class="audio-status">✓ Audio Loaded</div>
+
+                    <div class="sound-settings">
+                        <div class="setting-row">
+                            <span style="font-size: 0.8rem; font-weight: 600;">HIT AXIS</span>
+                            <select id="hit-axis"
+                                style="background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--glass-border); border-radius: 8px; font-size: 0.8rem; padding: 4px 8px;">
+                                <option value="x" selected>Axis X</option>
+                                <option value="y">Axis Y</option>
+                                <option value="z">Axis Z</option>
+                                <option value="mag">All Axes (Magnitude)</option>
+                            </select>
+                        </div>
+                        <div class="setting-row">
+                            <span style="font-size: 0.8rem; font-weight: 600;">HIT THRESHOLD</span>
+                            <div class="control-group">
+                                <input type="range" id="hit-threshold" min="0.01" max="1.0" step="0.01" value="0.5">
+                                <span id="val-threshold" style="min-width: 40px; text-align: right;">0.50G</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <div>MacBook M2+ IOKit HID @ 50Hz</div>
+            <div id="fps-counter">---</div>
+        </footer>
+    </div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+
+</html>
